@@ -411,7 +411,7 @@ function TasteBars({ taste, axes, accent }) {
   );
 }
 
-function WineDetail({ wine, onClose, onRerank, onDelete, onDrink }) {
+function WineDetail({ wine, onClose, onRerank, onDelete, onSetStatus }) {
   const tc = WINE_TYPE_COLORS[wine.type]||"#888";
   const hasScore = wine.myScore!=null;
   return (
@@ -466,21 +466,16 @@ function WineDetail({ wine, onClose, onRerank, onDelete, onDrink }) {
           <div style={{fontSize:12,color:wine.status==="sealed"?"#4A8A6A":"#A08040",marginTop:2}}>{wine.status==="sealed"?"🔒 Sealed":`${wine.fill}% remaining`}</div>
         </div>
       </div>
-      {/* Pour / drink controls */}
-      <div style={{marginTop:12,background:"#15110A",border:`1px solid ${S.faint}`,borderRadius:12,padding:"12px 14px"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-          <span style={{fontSize:9,color:S.muted,textTransform:"uppercase",letterSpacing:2}}>Pour a glass</span>
-          <span style={{fontSize:12,color:wine.status==="sealed"?"#4A8A6A":(wine.fill<=0?"#A05A5A":"#A08040")}}>{wine.status==="sealed"?"Sealed":wine.fill<=0?"Empty":`${wine.fill}% left`}</span>
+      {/* Sealed / Open toggle */}
+      <div style={{marginTop:12,background:"#15110A",border:`1px solid ${S.faint}`,borderRadius:12,padding:"12px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <span style={{fontSize:9,color:S.muted,textTransform:"uppercase",letterSpacing:2}}>Status</span>
+        <div style={{display:"flex",gap:6}}>
+          {["sealed","open"].map(st=>(
+            <button key={st} onClick={()=>onSetStatus(wine,st)} style={{padding:"7px 16px",borderRadius:9,border:`1px solid ${wine.status===st?(st==="sealed"?"#4A8A6A":"#A08040"):S.faint}`,cursor:"pointer",fontSize:12,fontFamily:"'Playfair Display',serif",fontWeight:700,
+            background:wine.status===st?(st==="sealed"?"#16301F":"#2A2010"):"transparent",
+            color:wine.status===st?(st==="sealed"?"#6AC08A":"#D4A860"):S.muted}}>{st==="sealed"?"🔒 Sealed":"🍷 Open"}</button>
+          ))}
         </div>
-        <div style={{display:"flex",gap:8}}>
-          {wine.status==="sealed"
-            ? <button onClick={()=>onDrink(wine,"open")} style={{flex:1,padding:10,background:`linear-gradient(135deg,#6A1A1A,${S.wine})`,border:"none",borderRadius:10,color:S.cream,fontSize:12,fontFamily:"'Playfair Display',serif",fontWeight:700,cursor:"pointer"}}>🔓 Open bottle</button>
-            : <>
-                <button onClick={()=>onDrink(wine,-10)} disabled={wine.fill<=0} style={{flex:1,padding:10,background:wine.fill<=0?"#1A1510":"#2A1A12",border:`1px solid ${S.faint}`,borderRadius:10,color:wine.fill<=0?S.faint:S.gold,fontSize:12,fontFamily:"Georgia,serif",cursor:wine.fill<=0?"default":"pointer"}}>– Small pour</button>
-                <button onClick={()=>onDrink(wine,-25)} disabled={wine.fill<=0} style={{flex:1,padding:10,background:wine.fill<=0?"#1A1510":"#2A1A12",border:`1px solid ${S.faint}`,borderRadius:10,color:wine.fill<=0?S.faint:S.gold,fontSize:12,fontFamily:"Georgia,serif",cursor:wine.fill<=0?"default":"pointer"}}>– Large pour</button>
-              </>}
-        </div>
-        {wine.fill<=0&&wine.status!=="sealed"&&<div style={{marginTop:8,fontSize:11,color:"#A05A5A",textAlign:"center"}}>This bottle is empty — finish & remove?  <button onClick={()=>onDelete(wine)} style={{background:"none",border:"none",color:"#C86A6A",textDecoration:"underline",cursor:"pointer",fontSize:11}}>Remove</button></div>}
       </div>
 
       <div style={{display:"flex",gap:8,marginTop:18}}>
@@ -490,7 +485,7 @@ function WineDetail({ wine, onClose, onRerank, onDelete, onDrink }) {
     </Modal>
   );
 }
-function SpiritDetail({ spirit, onClose, onRerank, onDelete, onDrink }) {
+function SpiritDetail({ spirit, onClose, onRerank, onDelete, onSetStatus }) {
   const tc = SPIRIT_TYPE_COLORS[spirit.type]||"#888";
   const hasScore = spirit.myScore!=null;
   return (
@@ -547,21 +542,16 @@ function SpiritDetail({ spirit, onClose, onRerank, onDelete, onDrink }) {
         </div>
       </div>
 
-      {/* Pour / drink controls */}
-      <div style={{marginTop:12,background:"#15110A",border:`1px solid ${S.faint}`,borderRadius:12,padding:"12px 14px"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-          <span style={{fontSize:9,color:S.muted,textTransform:"uppercase",letterSpacing:2}}>Pour a dram</span>
-          <span style={{fontSize:12,color:spirit.status==="sealed"?"#4A8A6A":(spirit.fill<=0?"#A05A5A":"#A08040")}}>{spirit.status==="sealed"?"Sealed":spirit.fill<=0?"Empty":`${spirit.fill}% left`}</span>
+      {/* Sealed / Open toggle */}
+      <div style={{marginTop:12,background:"#15110A",border:`1px solid ${S.faint}`,borderRadius:12,padding:"12px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <span style={{fontSize:9,color:S.muted,textTransform:"uppercase",letterSpacing:2}}>Status</span>
+        <div style={{display:"flex",gap:6}}>
+          {["sealed","open"].map(st=>(
+            <button key={st} onClick={()=>onSetStatus(spirit,st)} style={{padding:"7px 16px",borderRadius:9,border:`1px solid ${spirit.status===st?(st==="sealed"?"#4A8A6A":"#A08040"):S.faint}`,cursor:"pointer",fontSize:12,fontFamily:"'Playfair Display',serif",fontWeight:700,
+            background:spirit.status===st?(st==="sealed"?"#16301F":"#2A2010"):"transparent",
+            color:spirit.status===st?(st==="sealed"?"#6AC08A":"#D4A860"):S.muted}}>{st==="sealed"?"🔒 Sealed":"🥃 Open"}</button>
+          ))}
         </div>
-        <div style={{display:"flex",gap:8}}>
-          {spirit.status==="sealed"
-            ? <button onClick={()=>onDrink(spirit,"open")} style={{flex:1,padding:10,background:"linear-gradient(135deg,#5A2A0A,#8A4A0A)",border:"none",borderRadius:10,color:S.cream,fontSize:12,fontFamily:"'Playfair Display',serif",fontWeight:700,cursor:"pointer"}}>🔓 Crack it open</button>
-            : <>
-                <button onClick={()=>onDrink(spirit,-7)} disabled={spirit.fill<=0} style={{flex:1,padding:10,background:spirit.fill<=0?"#1A1510":"#2A1A0E",border:`1px solid ${S.faint}`,borderRadius:10,color:spirit.fill<=0?S.faint:"#D4900A",fontSize:12,fontFamily:"Georgia,serif",cursor:spirit.fill<=0?"default":"pointer"}}>– Neat (1.5oz)</button>
-                <button onClick={()=>onDrink(spirit,-15)} disabled={spirit.fill<=0} style={{flex:1,padding:10,background:spirit.fill<=0?"#1A1510":"#2A1A0E",border:`1px solid ${S.faint}`,borderRadius:10,color:spirit.fill<=0?S.faint:"#D4900A",fontSize:12,fontFamily:"Georgia,serif",cursor:spirit.fill<=0?"default":"pointer"}}>– Double</button>
-              </>}
-        </div>
-        {spirit.fill<=0&&spirit.status!=="sealed"&&<div style={{marginTop:8,fontSize:11,color:"#A05A5A",textAlign:"center"}}>Bottle's empty — <button onClick={()=>onDelete(spirit)} style={{background:"none",border:"none",color:"#C86A6A",textDecoration:"underline",cursor:"pointer",fontSize:11}}>kill it & remove</button></div>}
       </div>
 
       <div style={{display:"flex",gap:8,marginTop:18}}>
@@ -1479,10 +1469,9 @@ export default function App() {
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <div style={{display:"flex",alignItems:"center",gap:12}}>
                 <div style={{width:42,height:42,borderRadius:21,background:`linear-gradient(135deg,${S.wine},${S.gold})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontFamily:"'Playfair Display',serif",fontWeight:900}}>M</div>
-                <div><div style={{fontSize:15,fontFamily:"'Playfair Display',serif",fontWeight:700,color:S.text}}>SinnottMichael</div><div style={{fontSize:10,color:S.muted}}>1 Following · 1 Followers</div></div>
+                <div><div style={{fontSize:15,fontFamily:"'Playfair Display',serif",fontWeight:700,color:S.text}}>SinnottMichael</div><div style={{fontSize:10,color:S.muted}}>{totalWineBottles + totalSpiritBottles} bottles · {wines.length+spirits.length} ranked</div></div>
               </div>
               <div style={{display:"flex",gap:10}}>
-                <button style={{width:36,height:36,borderRadius:18,background:"#1A1510",border:`1px solid ${S.faint}`,color:S.muted,fontSize:15,cursor:"pointer"}}>🔔</button>
                 <button style={{width:36,height:36,borderRadius:18,background:"#1A1510",border:`1px solid ${S.faint}`,color:S.muted,fontSize:14,cursor:"pointer"}}>⚙</button>
               </div>
             </div>
@@ -1717,8 +1706,8 @@ export default function App() {
       </div>
 
       {/* ── MODALS ── */}
-      {selectedWine&&<WineDetail wine={wines.find(w=>w.id===selectedWine.id)||selectedWine} onClose={()=>setSelectedWine(null)} onRerank={w=>{setSelectedWine(null);setRankKind("wine");setRankSubject(w);}} onDelete={w=>{setWines(ws=>ws.filter(x=>x.id!==w.id));setSelectedWine(null);}} onDrink={(w,amt)=>setWines(ws=>ws.map(x=>x.id===w.id?(amt==="open"?{...x,status:"open"}:{...x,fill:Math.max(0,x.fill+amt)}):x))}/>}
-      {selectedSpirit&&<SpiritDetail spirit={spirits.find(s=>s.id===selectedSpirit.id)||selectedSpirit} onClose={()=>setSelectedSpirit(null)} onRerank={s=>{setSelectedSpirit(null);setRankKind("spirit");setRankSubject(s);}} onDelete={s=>{setSpirits(sp=>sp.filter(x=>x.id!==s.id));setSelectedSpirit(null);}} onDrink={(s,amt)=>setSpirits(sp=>sp.map(x=>x.id===s.id?(amt==="open"?{...x,status:"open"}:{...x,fill:Math.max(0,x.fill+amt)}):x))}/>}
+      {selectedWine&&<WineDetail wine={wines.find(w=>w.id===selectedWine.id)||selectedWine} onClose={()=>setSelectedWine(null)} onRerank={w=>{setSelectedWine(null);setRankKind("wine");setRankSubject(w);}} onDelete={w=>{setWines(ws=>ws.filter(x=>x.id!==w.id));setSelectedWine(null);}} onSetStatus={(w,st)=>setWines(ws=>ws.map(x=>x.id===w.id?{...x,status:st,fill:st==="sealed"?100:x.fill}:x))}/>}
+      {selectedSpirit&&<SpiritDetail spirit={spirits.find(s=>s.id===selectedSpirit.id)||selectedSpirit} onClose={()=>setSelectedSpirit(null)} onRerank={s=>{setSelectedSpirit(null);setRankKind("spirit");setRankSubject(s);}} onDelete={s=>{setSpirits(sp=>sp.filter(x=>x.id!==s.id));setSelectedSpirit(null);}} onSetStatus={(s,st)=>setSpirits(sp=>sp.map(x=>x.id===s.id?{...x,status:st,fill:st==="sealed"?100:x.fill}:x))}/>}
       {selectedCocktail&&<CocktailDetail c={selectedCocktail} spirits={spirits} pantry={pantry} onClose={()=>setSelectedCocktail(null)} onUpdate={u=>{setCocktails(cs=>cs.map(c=>c.id===u.id?u:c));setSelectedCocktail(u);}}/>}
       {selectedInfinity&&<InfinityDetail bottle={infinity.find(b=>b.id===selectedInfinity.id)||selectedInfinity} onClose={()=>setSelectedInfinity(null)} onAddPour={(id,pour)=>{setInfinity(inf=>inf.map(b=>b.id===id?{...b,pours:[...b.pours,pour]}:b));}}/>}
       {showAddCocktail&&<AddCocktailModal pantry={pantry} onClose={()=>setShowAddCocktail(false)} onAdd={c=>setCocktails(cs=>[...cs,c])}/>}
