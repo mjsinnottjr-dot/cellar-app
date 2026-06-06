@@ -24,3 +24,28 @@ Data saves per-device (no cross-device sync). Backup/Restore buttons on Home mov
 
 ## How to resume with Claude
 New chat won't remember this project. Start by pasting this file + the current `src/App.jsx`.
+
+Technical gotchas we hit (so we don't relearn them):
+
+Vite 8 / Rolldown crashes in StackBlitz — pinned to vite@^5.4.10 and @vitejs/plugin-react@^4.3.4
+localStorage doesn't persist inside Claude's preview (sandbox limit) — only works on the real Netlify/phone build
+StackBlitz preview caches aggressively; the source of truth is Netlify after a GitHub push
+
+Conventions baked into the code:
+
+Single-file app, everything in src/App.jsx
+localStorage keys are prefixed cc_ (cc_wines, cc_spirits, cc_cocktails, cc_wishlist, cc_infinity, cc_pantry)
+Color system is a constant S = {...}; bottle-type colors in WINE_TYPE_COLORS / SPIRIT_TYPE_COLORS
+
+Your preferences (how you like to work):
+
+You're on a PC; iPhone, no Mac
+Edit via GitHub pencil or StackBlitz, commit, Netlify auto-deploys
+You don't track pour volume (we removed it) — just Sealed/Open
+Build in small "waves," confirm each works before the next
+
+If you add those to NOTES.md, then next time you literally paste two things — NOTES.md and App.jsx — and I'm fully caught up.
+Two genuinely useful habits going forward, both you've basically got already:
+
+Commit often with short messages — that's your undo history
+Back up your data (the ⬇ button) before big changes, so a bad import or reset can't lose your real bottles
