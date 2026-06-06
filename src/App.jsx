@@ -411,7 +411,7 @@ function TasteBars({ taste, axes, accent }) {
   );
 }
 
-function WineDetail({ wine, onClose, onRerank, onDelete }) {
+function WineDetail({ wine, onClose, onRerank, onDelete, onDrink }) {
   const tc = WINE_TYPE_COLORS[wine.type]||"#888";
   const hasScore = wine.myScore!=null;
   return (
@@ -466,6 +466,23 @@ function WineDetail({ wine, onClose, onRerank, onDelete }) {
           <div style={{fontSize:12,color:wine.status==="sealed"?"#4A8A6A":"#A08040",marginTop:2}}>{wine.status==="sealed"?"🔒 Sealed":`${wine.fill}% remaining`}</div>
         </div>
       </div>
+      {/* Pour / drink controls */}
+      <div style={{marginTop:12,background:"#15110A",border:`1px solid ${S.faint}`,borderRadius:12,padding:"12px 14px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+          <span style={{fontSize:9,color:S.muted,textTransform:"uppercase",letterSpacing:2}}>Pour a glass</span>
+          <span style={{fontSize:12,color:wine.status==="sealed"?"#4A8A6A":(wine.fill<=0?"#A05A5A":"#A08040")}}>{wine.status==="sealed"?"Sealed":wine.fill<=0?"Empty":`${wine.fill}% left`}</span>
+        </div>
+        <div style={{display:"flex",gap:8}}>
+          {wine.status==="sealed"
+            ? <button onClick={()=>onDrink(wine,"open")} style={{flex:1,padding:10,background:`linear-gradient(135deg,#6A1A1A,${S.wine})`,border:"none",borderRadius:10,color:S.cream,fontSize:12,fontFamily:"'Playfair Display',serif",fontWeight:700,cursor:"pointer"}}>🔓 Open bottle</button>
+            : <>
+                <button onClick={()=>onDrink(wine,-10)} disabled={wine.fill<=0} style={{flex:1,padding:10,background:wine.fill<=0?"#1A1510":"#2A1A12",border:`1px solid ${S.faint}`,borderRadius:10,color:wine.fill<=0?S.faint:S.gold,fontSize:12,fontFamily:"Georgia,serif",cursor:wine.fill<=0?"default":"pointer"}}>– Small pour</button>
+                <button onClick={()=>onDrink(wine,-25)} disabled={wine.fill<=0} style={{flex:1,padding:10,background:wine.fill<=0?"#1A1510":"#2A1A12",border:`1px solid ${S.faint}`,borderRadius:10,color:wine.fill<=0?S.faint:S.gold,fontSize:12,fontFamily:"Georgia,serif",cursor:wine.fill<=0?"default":"pointer"}}>– Large pour</button>
+              </>}
+        </div>
+        {wine.fill<=0&&wine.status!=="sealed"&&<div style={{marginTop:8,fontSize:11,color:"#A05A5A",textAlign:"center"}}>This bottle is empty — finish & remove?  <button onClick={()=>onDelete(wine)} style={{background:"none",border:"none",color:"#C86A6A",textDecoration:"underline",cursor:"pointer",fontSize:11}}>Remove</button></div>}
+      </div>
+
       <div style={{display:"flex",gap:8,marginTop:18}}>
         <button onClick={()=>{ if(confirm(`Delete "${wine.name}" from your cellar? This can't be undone.`)) onDelete(wine); }} style={{flex:1,padding:13,background:"none",border:"1px solid #5A2A2A",borderRadius:14,color:"#A05A5A",fontSize:13,fontFamily:"'Playfair Display',serif",fontWeight:700,cursor:"pointer"}}>Delete</button>
         <button onClick={onClose} style={{flex:2,padding:13,background:`linear-gradient(135deg,#6A1A1A,${S.wine})`,border:"none",borderRadius:14,color:S.cream,fontSize:14,fontFamily:"'Playfair Display',serif",fontWeight:700,cursor:"pointer"}}>Close</button>
@@ -473,7 +490,7 @@ function WineDetail({ wine, onClose, onRerank, onDelete }) {
     </Modal>
   );
 }
-function SpiritDetail({ spirit, onClose, onRerank, onDelete }) {
+function SpiritDetail({ spirit, onClose, onRerank, onDelete, onDrink }) {
   const tc = SPIRIT_TYPE_COLORS[spirit.type]||"#888";
   const hasScore = spirit.myScore!=null;
   return (
@@ -529,6 +546,24 @@ function SpiritDetail({ spirit, onClose, onRerank, onDelete }) {
           <div style={{fontSize:12,color:spirit.status==="sealed"?"#4A8A6A":"#A08040",marginTop:2}}>{spirit.status==="sealed"?"🔒 Sealed":`${spirit.fill}% remaining`}</div>
         </div>
       </div>
+
+      {/* Pour / drink controls */}
+      <div style={{marginTop:12,background:"#15110A",border:`1px solid ${S.faint}`,borderRadius:12,padding:"12px 14px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+          <span style={{fontSize:9,color:S.muted,textTransform:"uppercase",letterSpacing:2}}>Pour a dram</span>
+          <span style={{fontSize:12,color:spirit.status==="sealed"?"#4A8A6A":(spirit.fill<=0?"#A05A5A":"#A08040")}}>{spirit.status==="sealed"?"Sealed":spirit.fill<=0?"Empty":`${spirit.fill}% left`}</span>
+        </div>
+        <div style={{display:"flex",gap:8}}>
+          {spirit.status==="sealed"
+            ? <button onClick={()=>onDrink(spirit,"open")} style={{flex:1,padding:10,background:"linear-gradient(135deg,#5A2A0A,#8A4A0A)",border:"none",borderRadius:10,color:S.cream,fontSize:12,fontFamily:"'Playfair Display',serif",fontWeight:700,cursor:"pointer"}}>🔓 Crack it open</button>
+            : <>
+                <button onClick={()=>onDrink(spirit,-7)} disabled={spirit.fill<=0} style={{flex:1,padding:10,background:spirit.fill<=0?"#1A1510":"#2A1A0E",border:`1px solid ${S.faint}`,borderRadius:10,color:spirit.fill<=0?S.faint:"#D4900A",fontSize:12,fontFamily:"Georgia,serif",cursor:spirit.fill<=0?"default":"pointer"}}>– Neat (1.5oz)</button>
+                <button onClick={()=>onDrink(spirit,-15)} disabled={spirit.fill<=0} style={{flex:1,padding:10,background:spirit.fill<=0?"#1A1510":"#2A1A0E",border:`1px solid ${S.faint}`,borderRadius:10,color:spirit.fill<=0?S.faint:"#D4900A",fontSize:12,fontFamily:"Georgia,serif",cursor:spirit.fill<=0?"default":"pointer"}}>– Double</button>
+              </>}
+        </div>
+        {spirit.fill<=0&&spirit.status!=="sealed"&&<div style={{marginTop:8,fontSize:11,color:"#A05A5A",textAlign:"center"}}>Bottle's empty — <button onClick={()=>onDelete(spirit)} style={{background:"none",border:"none",color:"#C86A6A",textDecoration:"underline",cursor:"pointer",fontSize:11}}>kill it & remove</button></div>}
+      </div>
+
       <div style={{display:"flex",gap:8,marginTop:18}}>
         <button onClick={()=>{ if(confirm(`Delete "${spirit.name}" from your barrel room? This can't be undone.`)) onDelete(spirit); }} style={{flex:1,padding:13,background:"none",border:"1px solid #5A2A2A",borderRadius:14,color:"#A05A5A",fontSize:13,fontFamily:"'Playfair Display',serif",fontWeight:700,cursor:"pointer"}}>Delete</button>
         <button onClick={onClose} style={{flex:2,padding:13,background:"linear-gradient(135deg,#5A2A0A,#8A4A0A)",border:"none",borderRadius:14,color:S.cream,fontSize:14,fontFamily:"'Playfair Display',serif",fontWeight:700,cursor:"pointer"}}>Close</button>
@@ -1386,6 +1421,35 @@ export default function App() {
   const wineProfile=buildProfile(wines,WINE_AXES);
   const spiritProfile=buildProfile(spirits,SPIRIT_AXES);
 
+  const exportData = () => {
+    const payload = { version:1, exported:new Date().toISOString(), wines, spirits, cocktails, wishlist, infinity, pantry };
+    const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `cellar-backup-${new Date().toISOString().slice(0,10)}.json`;
+    a.click(); URL.revokeObjectURL(url);
+  };
+  const importData = (e) => {
+    const file = e.target.files?.[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const d = JSON.parse(reader.result);
+        if(!d || (!d.wines && !d.spirits)) throw new Error("Unrecognized file");
+        if(!confirm("Restore this backup? It replaces your current collection on this device.")) return;
+        if(d.wines) setWines(d.wines);
+        if(d.spirits) setSpirits(d.spirits);
+        if(d.cocktails) setCocktails(d.cocktails);
+        if(d.wishlist) setWishlist(d.wishlist);
+        if(d.infinity) setInfinity(d.infinity);
+        if(d.pantry) setPantry(d.pantry);
+        alert("Backup restored.");
+      } catch(err){ alert("Couldn't read that file — make sure it's a Cellar backup .json"); }
+    };
+    reader.readAsText(file);
+    e.target.value = ""; // allow re-importing same file
+  };
+
   const wineTypes=["All",...Array.from(new Set(wines.map(w=>w.type)))];
   const spiritTypes=["All",...Array.from(new Set(spirits.map(s=>s.type)))];
   const cocktailCats=["All",...Array.from(new Set(cocktails.map(c=>c.category)))];
@@ -1484,9 +1548,14 @@ export default function App() {
               <div style={{fontSize:26,fontFamily:"'Playfair Display',serif",fontWeight:900,color:S.gold}}>${totalValue.toLocaleString()}</div>
             </div>
 
-            {/* Data + reset */}
+            {/* Data: backup, restore, reset */}
             <div style={{textAlign:"center",marginBottom:16}}>
-              <div style={{fontSize:10,color:S.faint,marginBottom:8}}>✓ Your collection saves automatically on this device</div>
+              <div style={{fontSize:10,color:S.faint,marginBottom:10}}>✓ Your collection saves automatically on this device</div>
+              <div style={{display:"flex",gap:8,justifyContent:"center",marginBottom:10}}>
+                <button onClick={exportData} style={{fontSize:11,background:"#1A1510",border:`1px solid ${S.faint}`,borderRadius:8,color:S.gold,padding:"7px 14px",cursor:"pointer",fontFamily:"Georgia,serif"}}>⬇ Backup to file</button>
+                <button onClick={()=>document.getElementById("cc-import-input").click()} style={{fontSize:11,background:"#1A1510",border:`1px solid ${S.faint}`,borderRadius:8,color:S.gold,padding:"7px 14px",cursor:"pointer",fontFamily:"Georgia,serif"}}>⬆ Restore</button>
+                <input id="cc-import-input" type="file" accept="application/json,.json" style={{display:"none"}} onChange={importData}/>
+              </div>
               <button onClick={()=>{
                 if(confirm("Reset everything to the starter collection? This erases bottles, ratings, wishlist, cocktails, and infinity bottles you've added on this device.")){
                   try{ ["cc_wines","cc_spirits","cc_cocktails","cc_wishlist","cc_infinity","cc_pantry"].forEach(k=>localStorage.removeItem(k)); }catch{}
@@ -1648,8 +1717,8 @@ export default function App() {
       </div>
 
       {/* ── MODALS ── */}
-      {selectedWine&&<WineDetail wine={wines.find(w=>w.id===selectedWine.id)||selectedWine} onClose={()=>setSelectedWine(null)} onRerank={w=>{setSelectedWine(null);setRankKind("wine");setRankSubject(w);}} onDelete={w=>{setWines(ws=>ws.filter(x=>x.id!==w.id));setSelectedWine(null);}}/>}
-      {selectedSpirit&&<SpiritDetail spirit={spirits.find(s=>s.id===selectedSpirit.id)||selectedSpirit} onClose={()=>setSelectedSpirit(null)} onRerank={s=>{setSelectedSpirit(null);setRankKind("spirit");setRankSubject(s);}} onDelete={s=>{setSpirits(sp=>sp.filter(x=>x.id!==s.id));setSelectedSpirit(null);}}/>}
+      {selectedWine&&<WineDetail wine={wines.find(w=>w.id===selectedWine.id)||selectedWine} onClose={()=>setSelectedWine(null)} onRerank={w=>{setSelectedWine(null);setRankKind("wine");setRankSubject(w);}} onDelete={w=>{setWines(ws=>ws.filter(x=>x.id!==w.id));setSelectedWine(null);}} onDrink={(w,amt)=>setWines(ws=>ws.map(x=>x.id===w.id?(amt==="open"?{...x,status:"open"}:{...x,fill:Math.max(0,x.fill+amt)}):x))}/>}
+      {selectedSpirit&&<SpiritDetail spirit={spirits.find(s=>s.id===selectedSpirit.id)||selectedSpirit} onClose={()=>setSelectedSpirit(null)} onRerank={s=>{setSelectedSpirit(null);setRankKind("spirit");setRankSubject(s);}} onDelete={s=>{setSpirits(sp=>sp.filter(x=>x.id!==s.id));setSelectedSpirit(null);}} onDrink={(s,amt)=>setSpirits(sp=>sp.map(x=>x.id===s.id?(amt==="open"?{...x,status:"open"}:{...x,fill:Math.max(0,x.fill+amt)}):x))}/>}
       {selectedCocktail&&<CocktailDetail c={selectedCocktail} spirits={spirits} pantry={pantry} onClose={()=>setSelectedCocktail(null)} onUpdate={u=>{setCocktails(cs=>cs.map(c=>c.id===u.id?u:c));setSelectedCocktail(u);}}/>}
       {selectedInfinity&&<InfinityDetail bottle={infinity.find(b=>b.id===selectedInfinity.id)||selectedInfinity} onClose={()=>setSelectedInfinity(null)} onAddPour={(id,pour)=>{setInfinity(inf=>inf.map(b=>b.id===id?{...b,pours:[...b.pours,pour]}:b));}}/>}
       {showAddCocktail&&<AddCocktailModal pantry={pantry} onClose={()=>setShowAddCocktail(false)} onAdd={c=>setCocktails(cs=>[...cs,c])}/>}
